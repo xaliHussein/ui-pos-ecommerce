@@ -1,32 +1,37 @@
 <template>
-  <div id="app">
-    <nav>
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </nav>
-    <router-view/>
-  </div>
+  <v-app id="inspire">
+    <Hrader />
+    <v-main>
+      <router-view />
+      <Sidebar />
+    </v-main>
+  </v-app>
 </template>
 
+<script>
+  import Hrader from "./components/layout/Header.vue";
+  import Sidebar from "./components/layout/Sidebar.vue";
+  // import Footer from "./components/Footer.vue";
+  export default {
+    components: { Hrader, Sidebar },
+    data: () => ({ drawer: null }),
+  };
+</script>
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-
-nav {
-  padding: 30px;
-}
-
-nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-nav a.router-link-exact-active {
-  color: #42b983;
-}
+  .scroll {
+    margin-left: 2px;
+  }
+  ::-webkit-scrollbar {
+    width: 12px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #e6e6e6;
+    border-left: 1px solid #dadada;
+    border-radius: 100px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background-image: linear-gradient(180deg, #3d8493 0%, #0f2215 99%);
+    border: solid 1px #e6e6e6;
+    border-radius: 100px;
+  }
 </style>
