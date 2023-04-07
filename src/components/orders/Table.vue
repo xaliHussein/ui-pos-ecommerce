@@ -1,0 +1,258 @@
+<template>
+  <v-col cols="12" sm="12" md="12" lg="12">
+    <v-data-table
+      class="data_table"
+      :headers="headers"
+      :items="cart_products"
+      :loading="lodding_table"
+      hide-default-footer
+      loading-text="جاري التحميل يرجى الأنتظار">
+      <template v-slot:top>
+        <v-toolbar flat width="450">
+          <!-- <v-toolbar-title></v-toolbar-title>  @input="updateQuery" -->
+
+          <v-text-field
+            v-model="products_query"
+            @input="queryChange"
+            color="#624FC6"
+            class="font-weight-black"
+            reverse
+            outlined
+            rounded
+            single-line
+            hide-details
+            label="ادخل باركود المنتج ..." />
+        </v-toolbar>
+      </template>
+      <th v-for="header in headers" :key="header.text">
+        <v-icon small>mdi-arrow_upward</v-icon>
+        {{ header.text }}
+      </th>
+
+      <template v-slot:item="{ item }">
+        <tr>
+          <td class="text-center font-weight-black">{{ item.name }}</td>
+          <td class="text-center font-weight-black" v-if="item.company == null">
+            <h5 style="color: red">لايوجد</h5>
+          </td>
+          <td class="text-center font-weight-black" v-else>
+            {{ item.company }}
+          </td>
+
+          <td class="text-center font-weight-black">
+            {{ item.sale_price | formatNumber }}
+          </td>
+          <td class="text-center font-weight-black">
+            <span>
+              <v-btn
+                icon
+                small
+                @click="plus(item)"
+                style="background-color: #ad519c"
+                ><v-icon color="white">mdi-plus</v-icon></v-btn
+              >
+              <span class="px-3 black--text">{{ item.quantity }}</span>
+              <v-btn
+                icon
+                small
+                @click="minus(item)"
+                style="background-color: #ad519c"
+                ><v-icon color="white">mdi-minus</v-icon></v-btn
+              >
+            </span>
+          </td>
+          <td class="text-center font-weight-black">
+            {{ item.availableQuantity }}
+          </td>
+          <td class="text-center font-weight-black">
+            {{ (item.sale_price * item.quantity) | formatNumber }}
+          </td>
+          <!-- <td class="text-center font-weight-black">
+                {{ moment(item.created_at).format("YYYY-MM-DD") }}
+              </td> -->
+
+          <td
+            class="text-center font-weight-black"
+            @click="delete_item(item)"
+            style="cursor: pointer">
+            <Icon icon="ic:round-delete-forever" color="#ec5a5a" width="37" />
+          </td>
+        </tr>
+      </template>
+    </v-data-table>
+    <!-- <div class="text-center pt-2 mt-3">
+          <v-row>
+            <v-col
+              align-self="center"
+              cols="5"
+              sm="5"
+              md="2"
+              lg="2"
+              class="mr-4">
+              <v-select
+                v-model="pagination.itemsPerPage"
+                :items="items"
+                label="Items per page"></v-select>
+            </v-col>
+            <v-col align-self="center" cols="5" sm="5" md="3" lg="3">
+              <v-pagination
+                v-model="pagination.page"
+                :length="pageCount1"
+                circle
+                color="#ba181b"></v-pagination>
+            </v-col>
+          </v-row>
+        </div> -->
+  </v-col>
+</template>
+<script>
+  export default {
+    data() {
+      return {
+        items: [5, 10, 25, 50, 100],
+        pagination: {},
+        search: "",
+        headers: [
+          {
+            text: "المنتج",
+            align: "center",
+            filterable: true,
+            value: "name",
+            class: "white--text title ",
+          },
+          {
+            text: "الشركة",
+            value: "company",
+            align: "center",
+            class: "white--text title",
+          },
+          {
+            text: "السعر",
+            value: "price",
+            align: "center",
+            class: "white--text title",
+          },
+          {
+            text: "الكمية",
+            value: "quantity",
+            align: "center",
+            class: "white--text title",
+          },
+          {
+            text: "الكمية المتاحة",
+            value: "quantity",
+            align: "center",
+            class: "white--text title",
+          },
+          {
+            text: "المجموع",
+            value: "sale_price",
+            align: "center",
+            class: "white--text title",
+          },
+
+          {
+            text: "اجرائات",
+            value: "price5",
+            align: "center",
+            class: "white--text title",
+          },
+        ],
+      };
+    },
+    computed: {
+      cart_products() {
+        return this.$store.state.orders.cart_products;
+      },
+      lodding_table() {
+        return this.$store.state.orders.lodding_table;
+      },
+      products_query: {
+        set(val) {
+          this.$store.state.orders.products_query = val;
+        },
+        get() {
+          return this.$store.state.orders.products_query;
+        },
+      },
+    },
+    methods: {
+      queryChange() {
+        clearTimeout(this._timerId);
+        this._timerId = setTimeout(() => {
+          //   this.params.page = 1;
+          //   this.get_products();
+          this.$store.dispatch("orders/get_products");
+        }, 500);
+      },
+      // احضار البضائع من خلال الباركود
+      //   barcode() {
+      //     clearTimeout(this._timerId);
+      //     this._timerId = setTimeout(() => {
+      //       this.$store.dispatch("orders/get_goods_barcode").then(() => {
+      //         this.$refs.barcode.reset();
+      //       });
+      //     }, 500);
+      //   },
+      // حذف عنصر من جدول
+      delete_item(item) {
+        let index = this.$store.state.orders.cart_products.findIndex(
+          (element) => {
+            // يبحث عن المنتج المراد حذفه من الجدول يطابق ال id و الكميه
+            if (element.id == item.id && element.quantity == item.quantity) {
+              return element.id == item.id;
+            }
+          }
+        );
+        this.$store.state.orders.total_price -= item.sale_price * item.quantity;
+        this.$store.state.orders.cart_products.splice(index, 1);
+      },
+      // اضفة في عدد كميه منتج
+      plus(item) {
+        if (item.availableQuantity != 0) {
+          let index = this.$store.state.orders.cart_products.findIndex(
+            (element) => {
+              if (element.id == item.id && element.quantity == item.quantity) {
+                return element.id == item.id;
+              }
+            }
+          );
+          item.quantity += 1;
+          item.availableQuantity -= 1;
+          this.$store.state.orders.total_price += item.sale_price;
+          this.$store.state.orders.cart_products.splice(index, 1, item);
+        } else {
+          let snack_message = {};
+          snack_message["color"] = "orange darken-1";
+          snack_message["icon"] = "alert";
+          snack_message["text"] = "نفذت الكميه";
+          this.$store.commit("SNACK_MESSAGE", snack_message);
+          setTimeout(() => {
+            this.$store.commit("TIME_OUT", snack_message);
+          }, 4000);
+        }
+      },
+      // نقصان في عدد كميه منتج
+      minus(item) {
+        if (item.quantity > 1) {
+          let index = this.$store.state.orders.cart_products.findIndex(
+            (element) => {
+              if (element.id == item.id && element.quantity == item.quantity) {
+                return element.id == item.id;
+              }
+            }
+          );
+          item.quantity -= 1;
+          item.availableQuantity += 1;
+          this.$store.state.orders.total_price -= item.sale_price;
+          this.$store.state.orders.cart_products.splice(index, 1, item);
+        }
+      },
+    },
+  };
+</script>
+<style scoped>
+  .data_table {
+    direction: rtl;
+  }
+</style>

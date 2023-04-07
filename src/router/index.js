@@ -1,50 +1,64 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import HomeView from "../views/Home.vue";
-import MenuView from "../views/Menu.vue";
-import OrderView from "../views/Order.vue";
-import PaymentView from "../views/Payment.vue";
+import OrderView from "../views/Orders.vue";
 import SettingsView from "../views/Settings.vue";
-import ChartView from "../views/Chart.vue";
+import LoginView from "../views/Login.vue";
 
 Vue.use(VueRouter);
 
 const routes = [
   {
+    path: "/login",
+    name: "login",
+    component: LoginView,
+    beforeEnter: redirect,
+  },
+  {
     path: "/",
     name: "home",
     component: HomeView,
+    beforeEnter: loggedIn,
   },
+
   {
-    path: "/menu",
-    name: "menu",
-    component: MenuView,
-  },
-  {
-    path: "/order",
-    name: "order",
+    path: "/orders",
+    name: "orders",
     component: OrderView,
-  },
-  {
-    path: "/payment",
-    name: "payment",
-    component: PaymentView,
-  },
-  {
-    path: "/chart",
-    name: "chart",
-    component: ChartView,
+    beforeEnter: loggedIn,
   },
   {
     path: "/settings",
     name: "settings",
     component: SettingsView,
+    beforeEnter: loggedIn,
   },
-  // {
-  //   path: "/about",
-  //   name: "about",
-  // },
 ];
+
+// function admin(to, from, next) {
+//   const user_type = localStorage.getItem("user_type");
+//   if (user_type == 0) {
+//     next();
+//   } else {
+//     next("/");
+//   }
+// }
+function loggedIn(to, from, next) {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    next("/login");
+  } else {
+    next();
+  }
+}
+function redirect(to, from, next) {
+  const token = localStorage.getItem("token");
+  if (token) {
+    next("/");
+  } else {
+    next();
+  }
+}
 
 const router = new VueRouter({
   mode: "history",
