@@ -1,8 +1,8 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import HomeView from "../views/Home.vue";
-import OrderView from "../views/Orders.vue";
-import SettingsView from "../views/Settings.vue";
+import AddOrdersView from "../views/AddOrders.vue";
+import DisplayOrders from "../views/DisplayOrders.vue";
 import LoginView from "../views/Login.vue";
 
 Vue.use(VueRouter);
@@ -22,15 +22,15 @@ const routes = [
   },
 
   {
-    path: "/orders",
-    name: "orders",
-    component: OrderView,
+    path: "/add_order",
+    name: "add_order",
+    component: AddOrdersView,
     beforeEnter: loggedIn,
   },
   {
-    path: "/settings",
-    name: "settings",
-    component: SettingsView,
+    path: "/display_orders",
+    name: "display_orders",
+    component: DisplayOrders,
     beforeEnter: loggedIn,
   },
 ];

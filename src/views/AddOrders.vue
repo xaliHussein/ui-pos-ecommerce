@@ -1,8 +1,10 @@
 <template>
   <v-container fluid>
     <v-row class="justify-center">
-      <Inovice :dialog="dialog" :products="products_shopping" />
-      <Navigation :products="products_shopping" />
+      <Inovice :dialog="dialog" :products_inovice="products_inovice" />
+      <Navigation
+        v-on:displayInovice="displayInovice"
+        v-on:createOrder="create_order" />
       <Table />
 
       <!-- <v-btn
@@ -27,7 +29,7 @@
     data() {
       return {
         dialog: false,
-        products_shopping: [],
+        products_inovice: [],
       };
     },
     computed: {
@@ -35,7 +37,16 @@
         return this.$store.state.orders.loading_order;
       },
     },
-    methods: {},
+    methods: {
+      displayInovice() {
+        this.products_inovice = this.$store.state.orders.cart_products;
+        this.dialog = true;
+      },
+      create_order() {
+        let data = {};
+        data["products"] = this.$store.state.orders.cart_products;
+      },
+    },
   };
 </script>
 <style scoped>
@@ -50,7 +61,7 @@
     > thead
     > tr
     > th {
-    background-color: #ad519c !important;
+    background-color: #624fc6 !important;
     color: #ffffff !important;
     font-family: "Cairo", sans-serif !important;
   }

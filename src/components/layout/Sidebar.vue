@@ -8,7 +8,7 @@
           :key="index"
           :to="opation.link"
           @change="model == index"
-          class="mt-3">
+          class="mt-3 px-0">
           <v-list-item-content>
             <Icon :icon="opation.icon" color="#1f424a" width="38" />
             <v-list-item-subtitle class="d-flex justify-center">
@@ -30,15 +30,15 @@
         opations: [
           { title: "الرئسية", icon: "ic:round-home", link: "/" },
           {
-            title: "طلبات",
+            title: "اضافة طلب",
             icon: "material-symbols:order-approve-rounded",
-            link: "orders",
+            link: "add_order",
           },
 
           {
-            title: "اعدادات",
-            icon: "icon-park-solid:setting",
-            link: "settings",
+            title: "عرض طلبات",
+            icon: "material-symbols:order-play-rounded",
+            link: "display_orders",
           },
         ],
       };

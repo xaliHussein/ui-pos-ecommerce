@@ -12,6 +12,7 @@
           <!-- <v-toolbar-title></v-toolbar-title>  @input="updateQuery" -->
 
           <v-text-field
+            ref="barcode"
             v-model="products_query"
             @input="queryChange"
             color="#624FC6"
@@ -21,6 +22,7 @@
             rounded
             single-line
             hide-details
+            clearable
             label="ادخل باركود المنتج ..." />
         </v-toolbar>
       </template>
@@ -32,15 +34,42 @@
       <template v-slot:item="{ item }">
         <tr>
           <td class="text-center font-weight-black">{{ item.name }}</td>
-          <td class="text-center font-weight-black" v-if="item.company == null">
-            <h5 style="color: red">لايوجد</h5>
-          </td>
-          <td class="text-center font-weight-black" v-else>
-            {{ item.company }}
-          </td>
 
           <td class="text-center font-weight-black">
             {{ item.sale_price | formatNumber }}
+          </td>
+          <td
+            class="text-center font-weight-black"
+            v-if="
+              item.offer != null &&
+              moment().format('YYYY-MM-DD') <= item.offer_expired
+            ">
+            <h3 style="color: green; direction: ltr">{{ item.offer }} %</h3>
+          </td>
+          <td class="text-center font-weight-black" v-else>
+            <h4>لايوجد</h4>
+          </td>
+
+          <td class="text-center font-weight-black">
+            {{ valueDetails }}
+            <h4
+              v-for="(data, index) in Object.assign(JSON.parse(item.details))"
+              :key="index">
+              <v-checkbox
+                ref="checkbox2"
+                v-model="valueDetails"
+                v-for="(objKey, indexkey) in Object.keys(data)"
+                :key="indexkey"
+                :id="index + data[objKey]"
+                multiple
+                :label="objKey + ' : ' + data[objKey]"
+                :value="data[objKey]"
+                @change="
+                  add_advance_details(data[objKey], objKey)
+                "></v-checkbox>
+            </h4>
+
+            <div>{{ k_v_details }}</div>
           </td>
           <td class="text-center font-weight-black">
             <span>
@@ -48,7 +77,7 @@
                 icon
                 small
                 @click="plus(item)"
-                style="background-color: #ad519c"
+                style="background-color: #624fc6"
                 ><v-icon color="white">mdi-plus</v-icon></v-btn
               >
               <span class="px-3 black--text">{{ item.quantity }}</span>
@@ -56,10 +85,16 @@
                 icon
                 small
                 @click="minus(item)"
-                style="background-color: #ad519c"
+                style="background-color: #624fc6"
                 ><v-icon color="white">mdi-minus</v-icon></v-btn
               >
             </span>
+          </td>
+          <td class="text-center font-weight-black" v-if="item.company == null">
+            <h5 style="color: red">لايوجد</h5>
+          </td>
+          <td class="text-center font-weight-black" v-else>
+            {{ item.company }}
           </td>
           <td class="text-center font-weight-black">
             {{ item.availableQuantity }}
@@ -67,15 +102,25 @@
           <td class="text-center font-weight-black">
             {{ (item.sale_price * item.quantity) | formatNumber }}
           </td>
-          <!-- <td class="text-center font-weight-black">
-                {{ moment(item.created_at).format("YYYY-MM-DD") }}
-              </td> -->
 
-          <td
-            class="text-center font-weight-black"
-            @click="delete_item(item)"
-            style="cursor: pointer">
-            <Icon icon="ic:round-delete-forever" color="#ec5a5a" width="37" />
+          <td class="text-center font-weight-black" style="cursor: pointer">
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn
+                  @click="delete_item(item)"
+                  fab
+                  icon
+                  x-small
+                  v-bind="attrs"
+                  v-on="on">
+                  <Icon
+                    icon="ic:round-delete-forever"
+                    color="#C62828"
+                    width="37" />
+                </v-btn>
+              </template>
+              <span>حذف</span>
+            </v-tooltip>
           </td>
         </tr>
       </template>
@@ -112,42 +157,74 @@
         items: [5, 10, 25, 50, 100],
         pagination: {},
         search: "",
+        column: null,
+        valueDetails: [],
+        keys: [],
+        k_v_details: [],
         headers: [
           {
             text: "المنتج",
             align: "center",
-            filterable: true,
+            sortable: false,
             value: "name",
             class: "white--text title ",
+            width: 140,
           },
-          {
-            text: "الشركة",
-            value: "company",
-            align: "center",
-            class: "white--text title",
-          },
+
           {
             text: "السعر",
             value: "price",
             align: "center",
             class: "white--text title",
+            width: 155,
+            sortable: false,
+          },
+          {
+            text: "خصم",
+            value: "offer",
+            align: "center",
+            class: "white--text title",
+            width: 155,
+            sortable: false,
+          },
+          {
+            text: "تفاصيل المنتج",
+            value: "advance_details",
+            align: "center",
+            class: "white--text title",
+            width: 165,
+            sortable: false,
           },
           {
             text: "الكمية",
             value: "quantity",
             align: "center",
             class: "white--text title",
+            width: 155,
+            sortable: false,
+          },
+          {
+            text: "الشركة",
+            value: "company",
+            align: "center",
+            class: "white--text title",
+            width: 140,
+            sortable: false,
           },
           {
             text: "الكمية المتاحة",
             value: "quantity",
             align: "center",
+            width: 155,
+            sortable: false,
             class: "white--text title",
           },
           {
             text: "المجموع",
             value: "sale_price",
             align: "center",
+            width: 155,
+            sortable: false,
             class: "white--text title",
           },
 
@@ -155,6 +232,8 @@
             text: "اجرائات",
             value: "price5",
             align: "center",
+            width: 155,
+            sortable: false,
             class: "white--text title",
           },
         ],
@@ -177,12 +256,33 @@
       },
     },
     methods: {
+      add_advance_details(value, key) {
+        console.log(key);
+        if (value === null || value.length === 0) {
+          // let v = {};
+          // v[key] = value;
+          // this.k_v_details.push(v);
+          console.log(true);
+        } else {
+          console.log(false);
+        }
+      },
+
       queryChange() {
+        let products_query = this.$store.state.orders.products_query;
         clearTimeout(this._timerId);
         this._timerId = setTimeout(() => {
           //   this.params.page = 1;
           //   this.get_products();
-          this.$store.dispatch("orders/get_products");
+          if (
+            products_query != null &&
+            products_query != undefined &&
+            products_query.length > 0
+          ) {
+            this.$store.dispatch("orders/get_products").then(() => {
+              this.$refs.barcode.reset();
+            });
+          }
         }, 500);
       },
       // احضار البضائع من خلال الباركود
@@ -255,4 +355,7 @@
   .data_table {
     direction: rtl;
   }
+  /* .theme--light.v-data-table >>> .v-data-table__wrapper {
+    height: 450px !important;
+  } */
 </style>

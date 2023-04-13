@@ -6,16 +6,19 @@ const orders = {
   state: {
     total_price: 0,
     cart_products: [],
+    orders: [],
     products_query: "",
+    order_query: "",
     pageCount: 1,
     params: {
       sortBy: [],
       sortDesc: [],
       page: 1,
-      itemsPerPage: 12,
+      itemsPerPage: 10,
     },
     loading_product: false,
     lodding_table: false,
+    lodding_table_order: false,
   },
   mutations: {
     GET_PRODUCTS(state, product) {
@@ -31,6 +34,9 @@ const orders = {
           if (element.quantity != 0) {
             ProductData["id"] = element.id;
             ProductData["quantity"] = 1;
+            ProductData["offer"] = element.offer;
+            ProductData["details"] = element.advance_details;
+            ProductData["offer_expired"] = element.offer_expired;
             ProductData["name"] = element.name;
             ProductData["company"] = element.brand.name;
             if (
@@ -46,8 +52,7 @@ const orders = {
               ProductData["sale_price"] = element.price;
               state.total_price += element.price;
             }
-            // ProductData["availableQuantity"] = element.quantity - 1;
-            ProductData["availableQuantity"] = 2;
+            ProductData["availableQuantity"] = element.quantity - 1;
             state.cart_products.push(ProductData);
           } else {
             let snack_message = {};
@@ -60,15 +65,23 @@ const orders = {
             }, 4000);
           }
         });
-        state.lodding_table = false;
       }
+      state.lodding_table = false;
+    },
+    GET_ORDERS(state, orders) {
+      state.orders.splice(0, state.orders.length);
+      orders.forEach((element) => {
+        state.orders.push(element);
+      });
+    },
+    ADD_ORDERS(state, orders) {
+      state.orders.unshift(orders);
     },
   },
   actions: {
     add_item({ commit }, data) {
       commit("ADD_ITEM", data);
     },
-    // احضار البضائع عن طريق باركود
     get_products({ commit, state, rootState }) {
       state.lodding_table = true;
       return new Promise((resolve) => {
@@ -92,6 +105,76 @@ const orders = {
           })
           .catch(() => {
             state.lodding_table = false;
+            let snack_message = {};
+            snack_message["color"] = "red darken-1";
+            snack_message["icon"] = "alert";
+            snack_message["text"] = "حدث مشكلة في الاتصال بالخادم";
+            commit("SNACK_MESSAGE", snack_message);
+            setTimeout(() => {
+              commit("TIME_OUT", snack_message);
+            }, 4000);
+          });
+      });
+    },
+    add_orders({ commit, state, rootState }, data) {
+      state.lodding_table = true;
+      return new Promise((resolve) => {
+        axios({
+          url: `${rootState.server}` + "/api/add_order",
+          data: data,
+          headers: {
+            "Content-Type": "application/json",
+          },
+          method: "post",
+        })
+          .then((response) => {
+            commit("ADD_ORDERS", response.data.result[0]);
+            resolve(response);
+          })
+          .catch(() => {
+            state.lodding_table = false;
+            let snack_message = {};
+            snack_message["color"] = "red darken-1";
+            snack_message["icon"] = "alert";
+            snack_message["text"] = "حدث مشكلة في الاتصال بالخادم";
+            commit("SNACK_MESSAGE", snack_message);
+            setTimeout(() => {
+              commit("TIME_OUT", snack_message);
+            }, 4000);
+          });
+      });
+    },
+    get_orders({ commit, state, rootState }) {
+      state.lodding_table_order = true;
+      let data = state.params;
+      return new Promise((resolve) => {
+        let skip = (data.page - 1) * data.itemsPerPage;
+        let limit = data.itemsPerPage;
+        // let query = "";
+        // if (
+        //   state.order_query != undefined &&
+        //   state.order_query != null &&
+        //   state.order_query.length > 0
+        // )
+        //   query = `?query=${state.order_query}`;
+        axios({
+          url:
+            `${rootState.server}` +
+            "/api/get_auth_order" +
+            "?skip=" +
+            skip +
+            "&limit=" +
+            limit,
+          method: "get",
+        })
+          .then((response) => {
+            state.pageCount = response.data.count;
+            commit("GET_ORDERS", response.data.result);
+            state.lodding_table_order = false;
+            resolve(response);
+          })
+          .catch(() => {
+            state.lodding_table_order = false;
             let snack_message = {};
             snack_message["color"] = "red darken-1";
             snack_message["icon"] = "alert";

@@ -1,44 +1,95 @@
 <template>
-  <v-navigation-drawer app clipped left width="350px">
-    <v-card class="card-totle mx-auto" height="300" v-if="total_price > 0">
+  <v-navigation-drawer
+    app
+    clipped
+    left
+    width="350px"
+    class="bacground-navigation">
+    <v-card
+      class="card-totle mx-auto bacground-navigation"
+      height="300"
+      v-if="total_price > 0">
+      <v-toolbar flat class="d-flex justify-center bacground-navigation">
+        <v-toolbar-title class="d-flex justify-center"
+          ><h3 style="color: #420660">الدفع</h3></v-toolbar-title
+        >
+      </v-toolbar>
+      <v-divider></v-divider>
       <v-card-title class="d-flex justify-center mt-4 pt-0 pb-0">
-        <v-btn-toggle
+        <v-bottom-navigation
+          class="bottom bacground-navigation"
           v-model="type_cash"
-          tile
-          color="deep-purple accent-3"
           group>
-          <v-btn :value="2"
-            ><h4>كاش</h4>
-            <Icon icon="mdi:cash-multiple" width="30" />
+          <v-btn
+            class="mr-3"
+            :class="type_cash == 2 ? 'btn-outline2' : 'btn-outline '"
+            :value="2"
+            @click="type_cash = 2"
+            ><h3 :class="type_cash == 2 ? 'color2-TI' : 'color-TI '">كاش</h3>
+            <Icon
+              icon="mdi:cash-multiple"
+              :class="type_cash == 2 ? 'color2-TI' : 'color-TI '"
+              width="30" />
           </v-btn>
-          <v-btn :value="1"
-            ><h4>بطاقة</h4>
-            <Icon icon="ic:outline-credit-card" width="30" />
+          <v-btn
+            :class="type_cash == 1 ? 'btn-outline2' : 'btn-outline '"
+            :value="1"
+            @click="type_cash = 1"
+            ><h3 :class="type_cash == 1 ? 'color2-TI' : 'color-TI '">بطاقة</h3>
+            <Icon
+              icon="ic:outline-credit-card"
+              :class="type_cash == 1 ? 'color2-TI' : 'color-TI '"
+              width="30" />
           </v-btn>
-        </v-btn-toggle>
-        <v-btn-toggle v-model="invoice" tile color="deep-purple accent-3" group>
-          <v-btn :value="2"
-            ><h4>سحب فاتورة</h4>
-            <Icon icon="mdi:invoice" width="30" />
+        </v-bottom-navigation>
+
+        <v-bottom-navigation
+          class="bottom bacground-navigation mt-4"
+          v-model="invoice"
+          grow>
+          <v-btn
+            class="mr-3"
+            :class="invoice == 2 ? 'btn-outline2' : 'btn-outline '"
+            :value="2"
+            @click="invoice = 2"
+            ><h3 :class="invoice == 2 ? 'color2-TI' : 'color-TI '">
+              سحب فاتورة
+            </h3>
+            <Icon
+              icon="mdi:invoice"
+              :class="invoice == 2 ? 'color2-TI' : 'color-TI '"
+              width="30" />
           </v-btn>
-          <v-btn :value="1">
-            <h4>بدون فاتورة</h4>
-            <Icon icon="mdi:invoice-remove" width="30"
-          /></v-btn>
-        </v-btn-toggle>
+          <v-btn
+            :class="invoice == 1 ? 'btn-outline2' : 'btn-outline '"
+            :value="1"
+            @click="invoice = 1"
+            ><h3 :class="invoice == 1 ? 'color2-TI' : 'color-TI '">
+              بدون فاتورة
+            </h3>
+            <Icon
+              icon="mdi:invoice-remove"
+              :class="invoice == 1 ? 'color2-TI' : 'color-TI '"
+              width="30" />
+          </v-btn>
+        </v-bottom-navigation>
       </v-card-title>
-      <v-divider class="divider mt-2"></v-divider>
-      <v-card-title class="d-flex justify-center pt-2 pb-0"
-        ><h5>{{ total_price | formatNumber }} IQD</h5>
+      <v-card-text>
+        <v-img
+          :height="170"
+          :width="200"
+          class="mx-auto mt-7 img-pay"
+          src="@/assets/pay3.png"></v-img>
+      </v-card-text>
+
+      <v-card-title class="d-flex justify-center pt-1 pb-0"
+        ><h4 style="color: #420660">{{ total_price | formatNumber }} IQD</h4>
         <v-spacer></v-spacer>
-        <h5>المجموع</h5></v-card-title
+        <h4 style="color: #420660">المجموع</h4></v-card-title
       >
 
-      <v-card-actions class="pt-0 d-flex justify-center mt-10">
-        <v-btn color="#624fc6" class="btn px-7" outlined @click="remove_all"
-          ><h3 style="color: #624fc6">الغاء</h3></v-btn
-        >
-        <v-btn @click="bay" color="#ad519c" class="btn px-7"
+      <v-card-actions class="pt-0 d-flex justify-center mt-6">
+        <v-btn @click="chack_order" color="#624fc6" class="btn"
           ><h3 style="color: white">تاكيد</h3></v-btn
         >
       </v-card-actions>
@@ -58,12 +109,6 @@
 </template>
 <script>
   export default {
-    props: {
-      products: {
-        type: Array,
-        require: true,
-      },
-    },
     data() {
       return {
         type_cash: 1,
@@ -92,24 +137,14 @@
     },
 
     methods: {
-      bay() {
-        this.chack_payment = true;
-      },
-      remove(items) {
-        let cart = JSON.parse(localStorage.getItem("cart"));
-        let total_price = JSON.parse(localStorage.getItem("total_price"));
-        let index = cart.findIndex(
-          (item) => item.id == items.id && item.price == items.price
-        );
-        total_price = total_price - items.price * items.quantity;
-
-        cart.splice(index, 1);
-        localStorage.setItem("cart", JSON.stringify(cart));
-        localStorage.setItem("total_price", JSON.stringify(total_price));
-        this.$store.commit("home/EDIT_TO_CART", cart);
-      },
-      remove_all() {
-        this.$store.commit("home/REMOVE_TO_CART");
+      chack_order() {
+        if (this.type_cash == 2) {
+          if (this.invoice == 2) {
+            this.$emit("displayInovice");
+          } else {
+            this.$emit("createOrder");
+          }
+        }
       },
     },
   };
@@ -129,13 +164,16 @@
   }
   .card-totle {
     box-shadow: 0px 0px 0px 0px !important;
-    border: 2px dashed #624fc6;
+    /* border: 2px dashed #624fc6; */
     border-radius: 15px;
     width: 330px;
     margin-top: 15px;
   }
   .divider {
-    border: 1px dashed #624fc6 !important;
+    border: 20px #624fc6 !important;
+  }
+  .bottom {
+    box-shadow: 0px 0px 0px 0px !important;
   }
   .item-basket {
     cursor: pointer;
@@ -166,12 +204,34 @@
   }
   .btn {
     border-radius: 7px;
+    padding-left: 130px !important;
+    padding-right: 130px !important;
   }
   .icon {
-    color: #9c47fc;
+    color: #624fc6;
     display: block;
-    background: -webkit-linear-gradient(#ad519c 50%, #624fc6 99%);
+    background: -webkit-linear-gradient(#624fc6 99%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+  }
+  .bacground-navigation {
+    background: rgba(252, 250, 250) !important;
+  }
+  .btn-bg {
+    background: #624fc6 !important;
+  }
+  .btn-outline2 {
+    border-radius: 10px !important;
+    background: #624fc6 !important;
+  }
+  .btn-outline {
+    border-radius: 10px !important;
+    background: rgba(249, 243, 246) !important;
+  }
+  .color-TI {
+    color: #624fc6;
+  }
+  .color2-TI {
+    color: #ffffff;
   }
 </style>
