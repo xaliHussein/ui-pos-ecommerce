@@ -44,7 +44,11 @@
       },
       create_order() {
         let data = {};
-        data["products"] = this.$store.state.orders.cart_products;
+
+        let cart_products = this.$store.state.orders.cart_products;
+        let advance_details = this.$store.state.orders.advance_details;
+        console.log("cart_products", cart_products);
+        console.log("advance_details", advance_details);
       },
     },
   };

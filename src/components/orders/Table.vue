@@ -15,15 +15,15 @@
             ref="barcode"
             v-model="products_query"
             @input="queryChange"
-            color="#624FC6"
-            class="font-weight-black"
+            class="font-weight-black text-field"
             reverse
             outlined
             rounded
             single-line
             hide-details
             clearable
-            label="ادخل باركود المنتج ..." />
+            label="ادخل باركود المنتج ..."
+            append-icon="mdi-magnify" />
         </v-toolbar>
       </template>
       <th v-for="header in headers" :key="header.text">
@@ -51,12 +51,12 @@
           </td>
 
           <td class="text-center font-weight-black">
-            {{ valueDetails }}
             <h4
               v-for="(data, index) in Object.assign(JSON.parse(item.details))"
               :key="index">
               <v-checkbox
-                ref="checkbox2"
+                hide-details
+                class="py-0 mt-0"
                 v-model="valueDetails"
                 v-for="(objKey, indexkey) in Object.keys(data)"
                 :key="indexkey"
@@ -65,11 +65,9 @@
                 :label="objKey + ' : ' + data[objKey]"
                 :value="data[objKey]"
                 @change="
-                  add_advance_details(data[objKey], objKey)
+                  add_advance_details($event, data[objKey], objKey, item.id)
                 "></v-checkbox>
             </h4>
-
-            <div>{{ k_v_details }}</div>
           </td>
           <td class="text-center font-weight-black">
             <span>
@@ -161,6 +159,7 @@
         valueDetails: [],
         keys: [],
         k_v_details: [],
+        length_details: 0,
         headers: [
           {
             text: "المنتج",
@@ -256,16 +255,45 @@
       },
     },
     methods: {
-      add_advance_details(value, key) {
-        console.log(key);
-        if (value === null || value.length === 0) {
-          // let v = {};
-          // v[key] = value;
-          // this.k_v_details.push(v);
-          console.log(true);
+      add_advance_details(event, value, key, id) {
+        if (this.length_details > event.length || event.length === 0) {
+          // if
+          console.log("event", event, value, key);
+          let index = this.k_v_details.findIndex(
+            (e) => e.key === key && e.value === value && e.id === id
+          );
+          this.k_v_details.splice(index, 1);
+          this.length_details--;
         } else {
-          console.log(false);
+          // else
+          var check = false;
+          this.k_v_details.forEach((e) => {
+            if (e.key === key && e.id === id) {
+              check = true;
+            }
+          });
+
+          if (check == true) {
+            let index = this.k_v_details.findIndex(
+              (e) => e.key === key && e.id === id
+            );
+            this.valueDetails.splice(index, 1);
+            this.k_v_details.splice(index, 1);
+            let data = {};
+            data["id"] = id;
+            data["key"] = key;
+            data["value"] = value;
+            this.k_v_details.push(data);
+          } else {
+            let data = {};
+            data["id"] = id;
+            data["key"] = key;
+            data["value"] = value;
+            this.k_v_details.push(data);
+            this.length_details++;
+          }
         }
+        this.$store.state.orders.advance_details = this.k_v_details;
       },
 
       queryChange() {
@@ -285,15 +313,7 @@
           }
         }, 500);
       },
-      // احضار البضائع من خلال الباركود
-      //   barcode() {
-      //     clearTimeout(this._timerId);
-      //     this._timerId = setTimeout(() => {
-      //       this.$store.dispatch("orders/get_goods_barcode").then(() => {
-      //         this.$refs.barcode.reset();
-      //       });
-      //     }, 500);
-      //   },
+
       // حذف عنصر من جدول
       delete_item(item) {
         let index = this.$store.state.orders.cart_products.findIndex(
@@ -354,6 +374,9 @@
 <style scoped>
   .data_table {
     direction: rtl;
+  }
+  .text-field {
+    direction: ltr;
   }
   /* .theme--light.v-data-table >>> .v-data-table__wrapper {
     height: 450px !important;

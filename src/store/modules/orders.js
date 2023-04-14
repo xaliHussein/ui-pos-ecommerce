@@ -7,6 +7,7 @@ const orders = {
     total_price: 0,
     cart_products: [],
     orders: [],
+    advance_details: null,
     products_query: "",
     order_query: "",
     pageCount: 1,

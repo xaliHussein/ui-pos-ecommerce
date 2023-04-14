@@ -12,7 +12,7 @@
           <v-list-item-content>
             <Icon :icon="opation.icon" color="#1f424a" width="38" />
             <v-list-item-subtitle class="d-flex justify-center">
-              <h3>{{ opation.title }}</h3>
+              <h3 class="py-1">{{ opation.title }}</h3>
             </v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
