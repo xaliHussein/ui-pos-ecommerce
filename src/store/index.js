@@ -3,6 +3,7 @@ import Vue from "vue";
 import Vuex from "vuex";
 import home from "./modules/home";
 import orders from "./modules/orders";
+import font from "./modules/font";
 
 Vue.use(Vuex);
 
@@ -96,5 +97,6 @@ export default new Vuex.Store({
   modules: {
     home,
     orders,
+    font,
   },
 });
