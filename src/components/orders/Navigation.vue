@@ -51,7 +51,7 @@
             class="mr-3"
             :class="invoice == 2 ? 'btn-outline2' : 'btn-outline '"
             :value="2"
-            @click="invoice = 2"
+            @click="set_invoice(2)"
             ><h3 :class="invoice == 2 ? 'color2-TI' : 'color-TI '">
               سحب فاتورة
             </h3>
@@ -63,7 +63,7 @@
           <v-btn
             :class="invoice == 1 ? 'btn-outline2' : 'btn-outline '"
             :value="1"
-            @click="invoice = 1"
+            @click="set_invoice(1)"
             ><h3 :class="invoice == 1 ? 'color2-TI' : 'color-TI '">
               بدون فاتورة
             </h3>
@@ -89,9 +89,21 @@
       >
 
       <v-card-actions class="pt-0 d-flex justify-center mt-6">
-        <v-btn @click="chack_order" color="#624fc6" class="btn"
-          ><h3 style="color: white">تاكيد</h3></v-btn
-        >
+        <v-btn
+          @click="chack_order"
+          :loading="loading"
+          color="#624fc6"
+          large
+          rounded
+          class="btn"
+          elevation="4">
+          <h3 style="color: white">تاكيد</h3>
+          <template v-slot:loader>
+            <span class="custom-loader">
+              <v-icon color="white">mdi-cached</v-icon>
+            </span>
+          </template>
+        </v-btn>
       </v-card-actions>
     </v-card>
 
@@ -112,12 +124,22 @@
     data() {
       return {
         type_cash: 1,
-        invoice: 2,
       };
     },
     computed: {
       total_price() {
         return this.$store.state.orders.total_price;
+      },
+      loading() {
+        return this.$store.state.orders.loading_add_orders;
+      },
+      invoice: {
+        get() {
+          return this.$store.state.orders.type_invoice;
+        },
+        set(val) {
+          this.$store.state.orders.type_invoice = val;
+        },
       },
       // eslint-disable-next-line vue/return-in-computed-property
       height() {
@@ -139,12 +161,12 @@
     methods: {
       chack_order() {
         if (this.type_cash == 2) {
-          if (this.invoice == 2) {
-            this.$emit("displayInovice");
-          } else {
-            this.$emit("createOrder");
-          }
+          this.$emit("createOrder");
         }
+      },
+      set_invoice(val) {
+        localStorage.setItem("invoice", val);
+        this.invoice = val;
       },
     },
   };
@@ -227,6 +249,7 @@
   .btn-outline {
     border-radius: 10px !important;
     background: rgba(249, 243, 246) !important;
+    border: 1px solid #624fc6;
   }
   .color-TI {
     color: #624fc6;

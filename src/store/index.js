@@ -84,6 +84,9 @@ export default new Vuex.Store({
           });
       });
     },
+    logout({ commit }) {
+      commit("CLEAR_USER");
+    },
   },
   getters: {
     snack_bar(state) {

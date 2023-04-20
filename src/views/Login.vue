@@ -42,11 +42,6 @@
                     :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
                     @click:append="showPassword = !showPassword"
                     :rules="PasswordsRules" />
-                  <h4
-                    :to="{ name: 'register' }"
-                    class="link-h4 d-flex justify-end">
-                    هل نسيت كلمة المرور ؟
-                  </h4>
                 </v-card-text>
 
                 <v-card-actions>
@@ -104,6 +99,7 @@
             .dispatch("login", data)
             .then(() => {
               this.$router.push("/");
+              location.reload();
             })
             .catch((e) => {
               console.log(e);

@@ -8,6 +8,17 @@
       <h5 class="mr-2">
         {{ moment().format("MMMM Do YYYY,") }} {{ currentTime }}
       </h5>
+      <v-tooltip bottom>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn icon @click="logout" v-bind="attrs" v-on="on">
+            <font-awesome
+              :icon="['fas', 'fa-right-from-bracket']"
+              color="#624fc6"
+              size="xl" />
+          </v-btn>
+        </template>
+        <span>خروج</span>
+      </v-tooltip>
     </v-app-bar>
   </div>
 </template>
@@ -24,6 +35,9 @@
     },
 
     methods: {
+      logout() {
+        this.$store.dispatch("logout");
+      },
       getCurrentTime() {
         const options = {
           hour12: true,

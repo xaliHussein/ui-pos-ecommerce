@@ -76,9 +76,9 @@ const home = {
             snack_message["color"] = "red darken-1";
             snack_message["icon"] = "alert";
             snack_message["text"] = "حدث مشكلة في الاتصال بالخادم";
-            commit("SNACK_MESSAGE", snack_message);
+            commit("SNACK_MESSAGE", snack_message, { root: true });
             setTimeout(() => {
-              commit("TIME_OUT", snack_message);
+              commit("TIME_OUT", snack_message, { root: true });
             }, 4000);
           });
       });
@@ -101,9 +101,9 @@ const home = {
             snack_message["color"] = "red darken-1";
             snack_message["icon"] = "alert";
             snack_message["text"] = "حدث مشكلة في الاتصال بالخادم";
-            commit("SNACK_MESSAGE", snack_message);
+            commit("SNACK_MESSAGE", snack_message, { root: true });
             setTimeout(() => {
-              commit("TIME_OUT", snack_message);
+              commit("TIME_OUT", snack_message, { root: true });
             }, 4000);
           });
       });

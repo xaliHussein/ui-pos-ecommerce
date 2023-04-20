@@ -1,6 +1,10 @@
 <template>
   <div>
-    <v-snackbar v-model="snack" :color="snack_message.color" timeout="4000">
+    <v-snackbar
+      v-model="snack"
+      :color="snack_message.color"
+      timeout="4000"
+      dir="rtl">
       <h4>{{ snack_message.text }}</h4>
       <template v-slot:action="{ attrs }">
         <v-btn color="grey darken-4" text v-bind="attrs">

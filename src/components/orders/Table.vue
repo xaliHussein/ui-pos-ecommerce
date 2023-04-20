@@ -22,7 +22,7 @@
             single-line
             hide-details
             clearable
-            label="ادخل باركود المنتج ..."
+            label="ادخل باركود او اسم المنتج "
             append-icon="mdi-magnify" />
         </v-toolbar>
       </template>
@@ -35,8 +35,8 @@
         <tr>
           <td class="text-center font-weight-black">{{ item.name }}</td>
 
-          <td class="text-center font-weight-black">
-            {{ item.sale_price | formatNumber }}
+          <td class="text-center font-weight-black" dir="ltr">
+            {{ item.sale_price | formatNumber }} د.ع
           </td>
           <td
             class="text-center font-weight-black"
@@ -63,7 +63,7 @@
                 :id="index + data[objKey]"
                 multiple
                 :label="objKey + ' : ' + data[objKey]"
-                :value="data[objKey]"
+                :value="item.id + data[objKey] + objKey"
                 @change="
                   add_advance_details($event, data[objKey], objKey, item.id)
                 "></v-checkbox>
@@ -97,8 +97,8 @@
           <td class="text-center font-weight-black">
             {{ item.availableQuantity }}
           </td>
-          <td class="text-center font-weight-black">
-            {{ (item.sale_price * item.quantity) | formatNumber }}
+          <td class="text-center font-weight-black" dir="ltr">
+            {{ (item.sale_price * item.quantity) | formatNumber }} د.ع
           </td>
 
           <td class="text-center font-weight-black" style="cursor: pointer">
@@ -123,29 +123,6 @@
         </tr>
       </template>
     </v-data-table>
-    <!-- <div class="text-center pt-2 mt-3">
-          <v-row>
-            <v-col
-              align-self="center"
-              cols="5"
-              sm="5"
-              md="2"
-              lg="2"
-              class="mr-4">
-              <v-select
-                v-model="pagination.itemsPerPage"
-                :items="items"
-                label="Items per page"></v-select>
-            </v-col>
-            <v-col align-self="center" cols="5" sm="5" md="3" lg="3">
-              <v-pagination
-                v-model="pagination.page"
-                :length="pageCount1"
-                circle
-                color="#ba181b"></v-pagination>
-            </v-col>
-          </v-row>
-        </div> -->
   </v-col>
 </template>
 <script>
@@ -293,6 +270,7 @@
             this.length_details++;
           }
         }
+        console.log("this.k_v_details", this.k_v_details);
         this.$store.state.orders.advance_details = this.k_v_details;
       },
 
@@ -378,7 +356,7 @@
   .text-field {
     direction: ltr;
   }
-  /* .theme--light.v-data-table >>> .v-data-table__wrapper {
+  .theme--light.v-data-table >>> .v-data-table__wrapper {
     height: 450px !important;
-  } */
+  }
 </style>
