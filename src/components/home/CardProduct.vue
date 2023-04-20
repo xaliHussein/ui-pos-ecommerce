@@ -76,7 +76,9 @@
       <!-- v-if="products.length < 0" -->
     </v-col>
 
-    <v-col v-if="products.length <= 0" class="d-flex justify-center">
+    <v-col
+      v-if="products.length <= 0 && loading_product == false"
+      class="d-flex justify-center">
       <v-card class="empty">
         <v-img width="300" height="300" src="@/assets/empty-box.gif"> </v-img>
         <v-card-title>
@@ -104,45 +106,7 @@
         return this.$store.state.server;
       },
     },
-    methods: {
-      // اضافة بضائع الى سلة
-      // add_item(item) {
-      //   var totle_price = this.$store.state.home.totle_price;
-      //   var products = {};
-      //   products["id"] = item.id;
-      //   products["price"] = item.price;
-      //   products["title"] = item.title;
-      //   products["quantity"] = 1;
-      //   products["img"] = item.img;
-      //   // انشاء خزن في متصفح اذا لم يتم انشاء اي سلة
-      //   if (!JSON.parse(localStorage.getItem("cart"))) {
-      //     totle_price += item.price;
-      //     localStorage.setItem("totle_price", JSON.stringify(totle_price));
-      //     let cart = [];
-      //     cart.push(products);
-      //     localStorage.setItem("cart", JSON.stringify(cart));
-      //     this.$store;
-      //     this.$store.commit("home/Add_TO_CART");
-      //   } else {
-      //     // في حال وجود سلة مسبقاا
-      //     var chack_product = false;
-      //     let cart = JSON.parse(localStorage.getItem("cart"));
-      //     // اضافة شرط حتى لا تتكر البضائع في السلة
-      //     cart.forEach((e) => {
-      //       if (e.id == item.id) {
-      //         chack_product = true;
-      //       }
-      //     });
-      //     if (chack_product == false) {
-      //       totle_price += item.price;
-      //       localStorage.setItem("totle_price", JSON.stringify(totle_price));
-      //       cart.push(products);
-      //       localStorage.setItem("cart", JSON.stringify(cart));
-      //       this.$store.commit("home/Add_TO_CART");
-      //     }
-      //   }
-      // },
-    },
+    methods: {},
   };
 </script>
 <style scoped>
