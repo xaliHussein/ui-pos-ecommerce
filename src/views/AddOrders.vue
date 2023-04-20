@@ -6,17 +6,6 @@
         v-on:displayInovice="displayInovice"
         v-on:createOrder="create_order" />
       <Table />
-
-      <!-- <v-btn
-        v-print="printObj"
-        color="#ad519c"
-        large
-        rounded
-        class="px-16 mx-auto"
-        elevation="4"
-        ><h4 style="color: white">print</h4></v-btn
-      > @click="dialog = true"-->
-      <!-- <v-btn @click="push">push </v-btn> -->
     </v-row>
   </v-container>
 </template>

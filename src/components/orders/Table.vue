@@ -356,7 +356,4 @@
   .text-field {
     direction: ltr;
   }
-  .theme--light.v-data-table >>> .v-data-table__wrapper {
-    height: 450px !important;
-  }
 </style>
