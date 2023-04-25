@@ -26,6 +26,7 @@
                     outlined
                     rounded
                     single-line
+                    clearable
                     :rules="userNameRules"
                     label="اسم المستخدم او رقم الهاتف " />
 
@@ -36,6 +37,7 @@
                     reverse
                     rounded
                     single-line
+                    clearable
                     class="font-weight-black text-field"
                     :type="showPassword ? 'text' : 'password'"
                     label="كلمة المرور"

@@ -13,7 +13,7 @@ export default new Vuex.Store({
     user_name: localStorage.getItem("user_name"),
     phone_number: localStorage.getItem("phone_number"),
     user_type: localStorage.getItem("user_type"),
-    // active: localStorage.getItem("active"),
+    active: localStorage.getItem("active"),
     loading_login: false,
     snack_message: {},
     snack_bar: false,
@@ -23,9 +23,10 @@ export default new Vuex.Store({
       state.user_name = data.result[0].user_name;
       state.phone_number = data.result[0].phone_number;
       state.user_type = data.result[0].user_type;
-      // state.active = data.result[0].active;
+      state.active = data.result[0].active;
     },
     CLEAR_USER() {
+      delete axios.defaults.headers.common["Authorization"];
       localStorage.removeItem("token");
       localStorage.removeItem("user_name");
       localStorage.removeItem("phone_number");

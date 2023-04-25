@@ -37,8 +37,6 @@
 <style>
   .app {
     font-family: "Cairo", sans-serif;
-    /* font-family: "Noto Sans Arabic", sans-serif;
-    font-family: "Vazirmatn", sans-serif; */
   }
   .scroll {
     margin-left: 2px;

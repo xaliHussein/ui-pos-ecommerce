@@ -1,7 +1,6 @@
 <template>
   <v-container fluid>
     <v-row class="justify-center">
-      <Inovice :dialog="dialog" :products_inovice="products_inovice" />
       <Navigation
         v-on:displayInovice="displayInovice"
         v-on:createOrder="create_order" />
@@ -11,13 +10,12 @@
 </template>
 <script>
   import Navigation from "../components/orders/Navigation";
-  import Inovice from "../components/orders/Inovice";
   import Table from "../components/orders/Table";
   import { jsPDF } from "jspdf";
   import autoTable from "jspdf-autotable";
   import moment from "moment";
   export default {
-    components: { Navigation, Inovice, Table },
+    components: { Navigation, Table },
     data() {
       return {
         dialog: false,

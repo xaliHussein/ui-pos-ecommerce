@@ -8,6 +8,7 @@ const orders = {
     cart_products: [],
     orders: [],
     type_invoice: localStorage.getItem("invoice") || 1,
+    type_cash: localStorage.getItem("type_cash") || 1,
     advance_details: null,
     products_query: "",
     order_query: "",

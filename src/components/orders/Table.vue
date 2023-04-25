@@ -2,6 +2,7 @@
   <v-col cols="12" sm="12" md="12" lg="12">
     <v-data-table
       class="data_table"
+      height="450px"
       :headers="headers"
       :items="cart_products"
       :loading="lodding_table"
@@ -9,8 +10,6 @@
       loading-text="جاري التحميل يرجى الأنتظار">
       <template v-slot:top>
         <v-toolbar flat width="450">
-          <!-- <v-toolbar-title></v-toolbar-title>  @input="updateQuery" -->
-
           <v-text-field
             ref="barcode"
             v-model="products_query"
@@ -278,8 +277,6 @@
         let products_query = this.$store.state.orders.products_query;
         clearTimeout(this._timerId);
         this._timerId = setTimeout(() => {
-          //   this.params.page = 1;
-          //   this.get_products();
           if (
             products_query != null &&
             products_query != undefined &&

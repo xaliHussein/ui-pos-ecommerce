@@ -24,7 +24,7 @@
             class="mr-3"
             :class="type_cash == 2 ? 'btn-outline2' : 'btn-outline '"
             :value="2"
-            @click="type_cash = 2"
+            @click="set_type_cash(2)"
             ><h3 :class="type_cash == 2 ? 'color2-TI' : 'color-TI '">كاش</h3>
             <Icon
               icon="mdi:cash-multiple"
@@ -34,7 +34,7 @@
           <v-btn
             :class="type_cash == 1 ? 'btn-outline2' : 'btn-outline '"
             :value="1"
-            @click="type_cash = 1"
+            @click="set_type_cash(1)"
             ><h3 :class="type_cash == 1 ? 'color2-TI' : 'color-TI '">بطاقة</h3>
             <Icon
               icon="ic:outline-credit-card"
@@ -83,7 +83,7 @@
       </v-card-text>
 
       <v-card-title class="d-flex justify-center pt-1 pb-0"
-        ><h4 style="color: #420660">{{ total_price | formatNumber }} IQD</h4>
+        ><h4 style="color: #420660">{{ total_price | formatNumber }} د.ع</h4>
         <v-spacer></v-spacer>
         <h4 style="color: #420660">المجموع</h4></v-card-title
       >
@@ -122,9 +122,7 @@
 <script>
   export default {
     data() {
-      return {
-        type_cash: 1,
-      };
+      return {};
     },
     computed: {
       total_price() {
@@ -139,6 +137,14 @@
         },
         set(val) {
           this.$store.state.orders.type_invoice = val;
+        },
+      },
+      type_cash: {
+        get() {
+          return this.$store.state.orders.type_cash;
+        },
+        set(val) {
+          this.$store.state.orders.type_cash = val;
         },
       },
       // eslint-disable-next-line vue/return-in-computed-property
@@ -167,6 +173,10 @@
       set_invoice(val) {
         localStorage.setItem("invoice", val);
         this.invoice = val;
+      },
+      set_type_cash(val) {
+        localStorage.setItem("type_cash", val);
+        this.type_cash = val;
       },
     },
   };

@@ -39,6 +39,7 @@ Axios.interceptors.response.use(
       localStorage.removeItem("user_name");
       localStorage.removeItem("active");
       localStorage.removeItem("phone_number");
+
       store.state.token = null;
       // let numberOfEntries = window.history.length;
       // for (let index = 0; index < numberOfEntries - 1; index++) {
